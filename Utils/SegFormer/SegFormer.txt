@@ -1,9 +1,0 @@
-      recall   precision
-001:0.7655   0.7796
-002:0.7023   0.6925
-003:0.8858   0.8647
-
-各验证样本路径：
-001: D:\Github_Repo\Deploy\label\10.TIF
-002: D:\Github_Repo\Deploy\label\20.TIF
-003: D:\Github_Repo\Deploy\label\30.TIF
