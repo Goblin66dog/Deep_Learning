@@ -7,7 +7,7 @@ from sklearn.metrics import recall_score, precision_score
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 from Deep_Learning.Data_Readers.I2L1 import DataLoader
-from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
+from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormer
 # from Deep_Learning.Models.Segformer.model import SegFormer
 import torch.nn as nn
 import warnings
@@ -76,9 +76,11 @@ def train(device, epochs=4, batch_size=4, lr=0.0001,step_size_up=3):
             optimizer.zero_grad()
 
             # 将数据拷贝到device中
-            image   = torch.cat([image,texture],dim=1).to(device=device, dtype=torch.float32)
+            image   = torch  .cat([image,texture],dim=1).to(device=device, dtype=torch.float32)
             texture = texture.to(device=device, dtype=torch.float32)
-            label   = label.to(device=device, dtype=torch.float32)
+            label   = label  .to(device=device, dtype=torch.float32)
+
+
 
             #预测图像
             # pred = net(image)

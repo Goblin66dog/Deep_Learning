@@ -1,26 +1,27 @@
-import random
+import warnings
 
-import cv2
 import numpy as np
+import torch.nn as nn
 import torch.utils.data
 from sklearn.metrics import recall_score, precision_score
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
-from Deep_Learning.Data_Readers.I2L1 import DataLoader
-from Deep_Learning.Models.AG_UNet.model import AGUNet
-from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
-# from Deep_Learning.Models.UNet.model import UNet
-# from Deep_Learning.Models.Segformer.model import SegFormer
-from Deep_Learning.Models.DeepLab_V3_Plus.model import DeepLab
-from Deep_Learning.Models.ASPP_U2Net.model import ASPPU2Net
 
-import torch.nn as nn
-import warnings
+from Deep_Learning.Data_Readers.I2L1 import DataLoader
+from Deep_Learning.Models.UNet.model                    import UNet
+from Deep_Learning.Models.DeepLab_V3_Plus.model         import DeepLab
+from Deep_Learning.Models.AG_UNet.model                 import AGUNet
+from Deep_Learning.Models.ASPP_U2Net.model              import ASPPU2Net
+from Deep_Learning.Models.SegFormer.model               import SegFormer
+from Deep_Learning.Models.Segformer_OutConv.model       import SegFormerOutConv
+from Deep_Learning.Models.Segformer_UNet.model          import SegFormerUNet
+from Deep_Learning.Models.Segformer_UNet_Concise.model  import SegFormerUNetConcise
+
+
+
 warnings.filterwarnings("ignore")
 
-# backbone_lr = 0.0001*0.01
 def train(device, epochs=10, batch_size=4, lr=5e-5,step_size_up=1):
-    #todo:
     net = SegFormer(num_classes=1,pretrained=False,in_channel=5,phi="b3")
     # net = ASPPU2Net(image_channels=4, texture_channels=1,classes=1)
 ########################################################################################################################
@@ -178,21 +179,101 @@ def train(device, epochs=10, batch_size=4, lr=5e-5,step_size_up=1):
     writer["pred"].close()
     writer["lr"].close()
 
+class TrainingStrategy:
+    def __init__(self,
+                 device,
+                 net,
+                 batch_size,
+                 epochs,
+                 optimizer,
+                 learning_rate,
+                 loss,
+                 backbones,
+                 training_data_path,
+                 validate_data_path = None,
+                 logs_path = None):
+        self.device             = device
+        self.net                = net
+        self.batch_size         = batch_size
+        self.epochs             = epochs
+        self.optimizer          = optimizer
+        self.learning_rate      = learning_rate
+        self.loss               = loss
+        self.backbones          = backbones
+        self.training_data_path = training_data_path
+        self.validate_data_path = validate_data_path
+        self.logs_path          = logs_path
+        self.create_logs()
+    def create_logs(self):
+        print("准备生成日志文件目录")
+        if self.logs_path is None:
+            writer = {
+                "loss"      : SummaryWriter(r"logs\loss"),
+                'recall'    : SummaryWriter(r"logs\recall"),
+                'precision' : SummaryWriter(r"logs\precision"),
+                "label"     : SummaryWriter(r"logs\label"),
+                "pred"      : SummaryWriter(r"logs\pred"),
+                "lr"        : SummaryWriter(r"logs\lr")
+            }
+        else:
+            writer = {
+                "loss"      : SummaryWriter(self.logs_path  + r"\loss"),
+                'recall'    : SummaryWriter(self.logs_path  + r"\recall"),
+                'precision' : SummaryWriter(self.logs_path  + r"\precision"),
+                "label"     : SummaryWriter(self.logs_path  + r"\label"),
+                "pred"      : SummaryWriter(self.logs_path  + r"\pred"),
+                "lr"        : SummaryWriter(self.logs_path  + r"\lr")
+            }
+        print("日志文件目录生成完成")
+
+    def train(self):
+        step = 0
+########################################################################################################################
+        print("开始读取训练数据")
+        TrainLoader = DataLoader(self.training_data_path)
+        print("训练数据读取完成")
+        if self.validate_data_path is not None:
+            print("开始读取验证数据")
+            ValidLoader = DataLoader(self.validate_data_path)
+            print("验证数据读取完成")
+
+        TrainData = torch.utils.data.DataLoader(
+            dataset=TrainLoader,
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+
+        BestLoss = float("inf")
+        self.net.train()
+
+        for epoch in range(self.epochs):
+            for image, label in TrainData:
+                self.optimizer.zero_grad()
+
+                image = image.to(device=self.device, dtype=torch.float32)
+                label = label.to(device=self.device, dtype=torch.float32)
+
+                prediction = self.net(image, label)
+                L1 = nn.BCEWithLogitsLoss()
+                Loss = L1(prediction, label)
+
+                if Loss < BestLoss:
+                    BestLoss = Loss
+                    torch.save(self.net.state_dict(), "model.pth")
+
+                Loss.backward()
+                self.optimizer.step()
+                step += 1
+
+            self.net.eval()
+            with torch.no_grad():
+
+
 
 if __name__=="__main__":
     # 选择设备，有cuda用cuda，没有就用cpu
     local_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # 选择使用的网络
-    # use_net = ("SegFormer_U")
-    # if use_net == "U2Net":
-    #     local_net = U2Net(image_channels=4, texture_channels=1, classes=1)
-    # elif use_net == "ASPPU2Net":
-    #     local_net = ASPPU2Net(image_channels=4, texture_channels=1, classes=1)
-    #
-    # elif use_net == "ESFNet":
-    # elif use_net == "UNet":
-    #     local_net = UNet(channels=3, classes=1)
-    # else:
-    #     local_net = SegFormer(num_classes=1, phi="b3",in_channel=5)
+
     # 指定训练集地址，开始训练
     train(local_device)

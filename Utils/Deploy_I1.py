@@ -2,9 +2,9 @@ import cv2
 import torch
 from torch.utils.data.dataset import Dataset
 # from Deep_Learning.Models.Segformer_UNet.model import SegFormer
-# from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
-from Deep_Learning.Models.Segformer_OutConv.model import SegFormer
-from Deep_Learning.Data_Readers.I1_DEPLOY import DataLoader
+from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormerUNetConcise
+# from Deep_Learning.Models.Segformer_OutConv.model import SegFormer
+from Deep_Learning.Data_Readers.Deploy_Reader_I1 import DataLoader
 import numpy as np
 
 import warnings
@@ -15,7 +15,7 @@ def pth_push(image_path, model_path):
     file = open(file_path, "w", encoding="utf-8")
     image_path_list = []
 
-    model= SegFormer(num_classes=1, phi="b3",in_channel=5)
+    model= SegFormerUNetConcise(num_classes=1, phi="b3",in_channel=5)
 
     model_path = model_path#pth权重文件地址
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')#cpu or gpu
@@ -49,6 +49,6 @@ def pth_push(image_path, model_path):
         step += 1
 
 if __name__ == "__main__":
-    image_path = r"D:\CUMT Datasets\validate"
+    image_path = r"D:\Github_Repo\validate_ori_image\used"
     model_path = (r"D:\Github_Repo\Deep_Learning\Training_Strategies\model.pth")
     pth_push(image_path, model_path)

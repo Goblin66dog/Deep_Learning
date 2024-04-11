@@ -31,7 +31,7 @@ class DataLoader(Dataset):
         #reshape
         image1_array = image1_array.reshape(image1_bands, image1_height, image1_width)
         image1_array = image1_array[::-1, ]
-        image1_array = Padding(image1_array, image_shape="CHW").nor(512, 512)
+        image1_array = Padding(image1_array, image_shape="CHW").nor(256, 256)
 
 
         image1_array = cv2.normalize(image1_array,None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)

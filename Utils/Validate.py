@@ -3,14 +3,12 @@ import torch
 from sklearn.metrics import recall_score, precision_score
 from torch.utils.data.dataset import Dataset
 
-from Deep_Learning.Models.AG_UNet.model import AGUNet
 # from Deep_Learning.Models.ASPP_U2Net.model import ASPPU2Net
-from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
+from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormer
 # from Deep_Learning.Models.Segformer.model import SegFormer
-from Deep_Learning.Models.UNet.model import UNet
 
 
-from Deep_Learning.Utils.I2L1_DEPLOY import DataLoader
+from Deep_Learning.Data_Readers.Validate_Reader_I2L1 import DataLoader
 import numpy as np
 
 import warnings

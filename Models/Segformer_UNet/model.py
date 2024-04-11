@@ -148,9 +148,9 @@ class OutConv(nn.Module):
     def forward(self,x):
         return self.conv(x)
 
-class SegFormer(nn.Module):
+class SegFormerUNet(nn.Module):
     def __init__(self, num_classes = 21, phi = 'b0', pretrained = False, in_channel = 5):
-        super(SegFormer, self).__init__()
+        super(SegFormerUNet, self).__init__()
         self.num_classes = num_classes
         self.in_channel = in_channel
         self.in_channels = {

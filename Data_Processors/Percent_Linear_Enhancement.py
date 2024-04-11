@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
-import random
-from Padding import Padding
+
 
 #分通道进行flip & padding & normalize
 class PercentLinearEnhancement:

@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from torch.utils.data.dataset import Dataset
 from Deep_Learning.Data_Processors.Padding import Padding
+from Deep_Learning.Data_Processors.Percent_Linear_Enhancement import PercentLinearEnhancement
 
 from Deep_Learning.Data_Readers import Data_Reader
 import cv2
@@ -40,10 +41,12 @@ class DataLoader(Dataset):
         image1_array = image1_array.reshape(image1_bands, image1_height, image1_width)
         image1_array = image1_array[::-1, ]
         image2_array = image2_array.reshape(image2_bands, image2_height, image2_width)
+########################################################################################################################
+        image1_array = PercentLinearEnhancement(image1_array, image_shape="CHW").gray_process()
+        image2_array = PercentLinearEnhancement(image2_array, image_shape="HW").gray_process()
         image1_array = Padding(image1_array, image_shape="CHW").nor(256, 256)
         image2_array = Padding(image2_array, image_shape="CHW").nor(256, 256)
-
-
+########################################################################################################################
         image1_array = cv2.normalize(image1_array,None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         image2_array = cv2.normalize(image2_array, None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
@@ -51,7 +54,7 @@ class DataLoader(Dataset):
         image1_array = torch.tensor(image1_array,dtype=torch.float32)
         image2_array = torch.tensor(image2_array,dtype=torch.float32)
 
-        return image1_array, image2_array
+        return image1_array, image2_array, self.image1_path
 
     def __len__(self):
         return len(self.image1_path)

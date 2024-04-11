@@ -1,26 +1,24 @@
 import cv2
 import torch
 from torch.utils.data.dataset import Dataset
+import os
 
 from Deep_Learning.Models.ASPP_U2Net.model import ASPPU2Net
 # from Deep_Learning.Models.Segformer_UNet.model import SegFormer
-from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
+from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormerUNetConcise
 # from Deep_Learning.Models.Segformer.model import SegFormer
-from Deep_Learning.Data_Readers.I2_DEPLOY import DataLoader
+from Deep_Learning.Data_Readers.Deploy_Reader_I2 import DataLoader
 import numpy as np
 
 import warnings
 warnings.filterwarnings("ignore")
 
 def pth_push(image_path, model_path):
-    file_path = "test logs.txt"
-    file = open(file_path, "w", encoding="utf-8")
-    image_path_list = []
 
-    model= SegFormer(num_classes=1, phi="b3",in_channel=5)
+    model= SegFormerUNetConcise(num_classes=1, phi="b3",in_channel=5)
     # model = UNet(classes=1,channels=5)
     # model = AGUNet(classes=1, channels=5)
-    model = ASPPU2Net(image_channels=4,texture_channels=1,classes=1)
+    # model = ASPPU2Net(image_channels=4,texture_channels=1,classes=1)
 
     model_path = model_path#pth权重文件地址
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')#cpu or gpu
@@ -37,13 +35,11 @@ def pth_push(image_path, model_path):
 
 
     step = 0
-    for image, texture in data:
+    for image, texture , path in data:
         image = torch.cat([image, texture], dim=1).to(device=device, dtype=torch.float32)
-        # image = image.to(device=device, dtype=torch.float32)
         texture = texture.to(device=device, dtype=torch.float32)
 
         pred = model(image, texture)
-        # pred = model(image)
 
         pred = torch.sigmoid(pred)
 
@@ -51,11 +47,15 @@ def pth_push(image_path, model_path):
         pred[pred <= 0.5] = 0
 
         pred = np.array(pred.data.cpu())
-        cv2.imshow("pred", pred[0][0])
-        cv2.waitKey(0)
+
+        # cv2.imshow("pred", pred[0][0])
+        # cv2.waitKey(0)
+        # cv2.imwrite("")
+        name = os.path.splitext(os.path.basename(path[step][0]))[0]
+        cv2.imwrite(str(name)+ ".tif", pred[0][0])
         step += 1
 
 if __name__ == "__main__":
-    image_path = r"D:\Github_Repo\Deploy"
-    model_path = (r"D:\Github_Repo\logs\SegFormer_U\model logs\model.pth")
+    image_path = r"D:\Github_Repo\validate_ori_image\test"
+    model_path = (r"D:\Github_Repo\logs\SegFormer_U\model logs\model2.pth")
     pth_push(image_path, model_path)
