@@ -10,7 +10,7 @@ from Deep_Learning.Data_Readers.I1L1 import DataLoader
 from Deep_Learning.Models.AG_UNet.model import AGUNet
 # from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
 # from Deep_Learning.Models.UNet.model import UNet
-from Deep_Learning.Models.Segformer_OutConv.model import SegFormer
+from Deep_Learning.Models.SegFormer_OutConv.model import SegFormer
 from Deep_Learning.Models.DeepLab_V3_Plus.model import DeepLab
 from Deep_Learning.Models.ASPP_U2Net.model import ASPPU2Net
 

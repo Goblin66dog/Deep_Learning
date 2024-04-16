@@ -44,8 +44,8 @@ class DataLoader(Dataset):
 ########################################################################################################################
         image1_array = PercentLinearEnhancement(image1_array, image_shape="CHW").gray_process()
         image2_array = PercentLinearEnhancement(image2_array, image_shape="HW").gray_process()
-        image1_array = Padding(image1_array, image_shape="CHW").nor(256, 256)
-        image2_array = Padding(image2_array, image_shape="CHW").nor(256, 256)
+        # image1_array = Padding(image1_array, image_shape="CHW").nor(256, 256)
+        # image2_array = Padding(image2_array, image_shape="CHW").nor(256, 256)
 ########################################################################################################################
         image1_array = cv2.normalize(image1_array,None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         image2_array = cv2.normalize(image2_array, None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)

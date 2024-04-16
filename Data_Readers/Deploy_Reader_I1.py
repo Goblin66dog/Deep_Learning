@@ -38,8 +38,7 @@ class DataLoader(Dataset):
 
         # 转为tensor
         image1_array = torch.tensor(image1_array,dtype=torch.float32)
-
-        return image1_array
+        return image1_array, self.image1_path
 
     def __len__(self):
         return len(self.image1_path)

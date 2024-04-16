@@ -88,20 +88,20 @@ class SegFormerHead(nn.Module):
 
 
 class SegFormer(nn.Module):
-    def __init__(self, num_classes=21, phi='b0', pretrained=False, in_channels = 3):
+    def __init__(self, in_channels = 3, num_classes=21, backbone='b0', pretrained=False):
         super(SegFormer, self).__init__()
         self.in_channels = {
             'b0': [32, 64, 160, 256], 'b1': [64, 128, 320, 512], 'b2': [64, 128, 320, 512],
             'b3': [64, 128, 320, 512], 'b4': [64, 128, 320, 512], 'b5': [64, 128, 320, 512],
-        }[phi]
+        }[backbone]
         self.backbone = {
             'b0': mit_b0, 'b1': mit_b1, 'b2': mit_b2,
             'b3': mit_b3, 'b4': mit_b4, 'b5': mit_b5,
-        }[phi](pretrained,in_channels)
+        }[backbone](pretrained,in_channels)
         self.embedding_dim = {
             'b0': 256, 'b1': 256, 'b2': 768,
             'b3': 768, 'b4': 768, 'b5': 768,
-        }[phi]
+        }[backbone]
         self.decode_head = SegFormerHead(num_classes, self.in_channels, self.embedding_dim)
 
     def forward(self, inputs):

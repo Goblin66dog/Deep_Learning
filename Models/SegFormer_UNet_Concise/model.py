@@ -52,13 +52,7 @@ class Decoder(nn.Module):
             k=1,
         )
 
-        self.linear_pred = nn.Sequential(
-            nn.ConvTranspose2d(embedding_dim, 64, kernel_size=2, stride=2),
-            nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
-            nn.Conv2d(32, 16, kernel_size=3, padding=1),
-            nn.BatchNorm2d(16),
-            nn.ReLU(inplace=True),
-        )
+        self.linear_pred = nn.ConvTranspose2d(embedding_dim, 64, kernel_size=2, stride=2)
         self.dropout = nn.Dropout2d(dropout_ratio)
 
     def forward(self, inputs):
@@ -83,41 +77,111 @@ class Decoder(nn.Module):
         x = self.linear_pred(x)
         return x
 
+#2次卷积#################################################################################################################
+class DoubleConv(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.double_conv = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True)
+        )
+    def forward(self, x):
+        return self.double_conv(x)
+
+#下采样##################################################################################################################
+class Down(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.down = nn.Sequential(
+            # nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(in_channels, in_channels, kernel_size=2, stride=2, padding=0),
+            nn.BatchNorm2d(in_channels),
+            nn.ReLU(inplace=True),
+            DoubleConv(in_channels, out_channels)
+        )
+
+    def forward(self, x):
+        return self.down(x)
+#上采样##################################################################################################################
+class UpFromSem(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+
+        self.up_DoubleConv= DoubleConv(in_channels, out_channels)
+    def forward(self, x_down, x_skip_connection):
+        x_forward = torch.concat([x_down,x_skip_connection], dim=1)
+        return self.up_DoubleConv(x_forward)
+
+class Up(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.up = nn.Sequential(
+            # nn.Upsample(scale_factor=2,mode="bilinear",align_corners=True)
+            nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
+        )
+        self.up_DoubleConv= DoubleConv(in_channels, out_channels)
+
+    def forward(self, x_down, x_skip_connection):
+        x_up = self.up(x_down)
+        x_forward = torch.concat([x_up,x_skip_connection], dim=1)
+        return self.up_DoubleConv(x_forward)
+
+#输出层##################################################################################################################
 class OutConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, in_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(in_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        )
 
     def forward(self,x):
         return self.conv(x)
 
-class SegFormerOutConv(nn.Module):
-    def __init__(self, num_classes = 21, phi = 'b0', pretrained = False, in_channels = 5):
-        super(SegFormerOutConv, self).__init__()
+class SegFormerUNetConcise(nn.Module):
+    def __init__(self, in_channels = 3, num_classes=21, backbone='b0', pretrained=False):
+        super(SegFormerUNetConcise, self).__init__()
         self.num_classes = num_classes
         self.in_channel = in_channels
         self.in_channels = {
             'b0': [32, 64, 160, 256], 'b1': [64, 128, 320, 512], 'b2': [64, 128, 320, 512],
             'b3': [64, 128, 320, 512], 'b4': [64, 128, 320, 512], 'b5': [64, 128, 320, 512],
-        }[phi]
+        }[backbone]
         self.backbone   = {
             'b0': mit_b0, 'b1': mit_b1, 'b2': mit_b2,
             'b3': mit_b3, 'b4': mit_b4, 'b5': mit_b5,
-        }[phi](pretrained, in_channels)
+        }[backbone](pretrained,in_channels)
         self.embedding_dim   = {
             'b0': 256, 'b1': 256, 'b2': 768,
             'b3': 768, 'b4': 768, 'b5': 768,
-        }[phi]
+        }[backbone]
         self.decode_head = Decoder(self.in_channels, self.embedding_dim)
-        self.output_layer = OutConv(16, self.num_classes)
+
+        self.input_image = DoubleConv(1, 32)
+        self.Down1 = Down(32, 64)
+        self.Up1   = UpFromSem(128, 64)
+        self.Up2   = Up(64, 32)
+        self.output_layer = OutConv(32, self.num_classes)
 
 
-    def forward(self, inputs):
+    def forward(self, inputs, sematic_info):
 
         x = self.backbone.forward(inputs)
         x = self.decode_head.forward(x)
 
-        x = self.output_layer(x)
+        x_512 = self.input_image(sematic_info)
+        x_256 = self.Down1(x_512)
+
+        x_256 = self.Up1(x, x_256)
+        x_512 = self.Up2(x_256, x_512)
+
+        x = self.output_layer(x_512)
 
         # x = F.interpolate(x, size=(H, W), mode='bilinear', align_corners=True)
         return x

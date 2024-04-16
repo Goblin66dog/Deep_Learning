@@ -2,7 +2,7 @@ import cv2
 import torch
 from torch.utils.data.dataset import Dataset
 # from Deep_Learning.Models.Segformer_UNet.model import SegFormer
-from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormerUNetConcise
+from Deep_Learning.Models.SegFormer_UNet_Concise.model import SegFormerUNetConcise
 # from Deep_Learning.Models.Segformer_OutConv.model import SegFormer
 from Deep_Learning.Data_Readers.Deploy_Reader_I1 import DataLoader
 import numpy as np

@@ -47,7 +47,7 @@ class Processor:
             self.image = Padding(self.image, image_shape=self.image_shape).nor(256,256)
             self.image = Flip8x(self.image, image_shape=self.image_shape).flip8x()
         elif self.mode == "PF":
-            self.image = Padding(self.image, image_shape=self.image_shape).nor(512,512)
+            self.image = Padding(self.image, image_shape=self.image_shape).nor(256,256)
             self.image = Flip8x(self.image, image_shape=self.image_shape).flip8x()
         elif self.mode == "LP":
             self.image = PercentLinearEnhancement(self.image, image_shape=self.image_shape).gray_process()
@@ -116,16 +116,16 @@ if "__main__" == __name__:
     # elif self.mode == "P":
     #     self.image = Padding(self.image, image_shape=self.image_shape).nor(256, 256)
 
-    # Processor.batch_processor(r"D:\Project\CUMT_PAPER_DATASETS\label",
-    #                           r"D:\Project\CUMT_PAPER_DATASETS_FINAL\label",
-    #                           "HW",
-    #                           "PF"
-    #                           )
-    Processor.batch_processor(r"D:\Github_Repo\validate_ori_image\image2",
-                              r"D:\Github_Repo\Deploy\image2",
+    Processor.batch_processor(r"D:\Github_Repo\validate_ori_image\4.12(1)\label",
+                              r"D:\Github_Repo\Deploy\label",
                               "HW",
-                              "L"
+                              "PF"
                               )
+    # Processor.batch_processor(r"D:\Github_Repo\validate_ori_image\4.12(1)\image2",
+    #                           r"D:\Github_Repo\Deploy\image2",
+    #                           "CHW",
+    #                           "LPF"
+    #                           )
 
 
 

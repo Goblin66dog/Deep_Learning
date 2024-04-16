@@ -1,10 +1,9 @@
 from .parts import *
 
 class UNet(nn.Module):
-    def __init__(self, channels, classes):
+    def __init__(self, in_channels, num_classes):
         super().__init__()
-        self.channels = channels
-        self.classes = classes
+        self.channels = in_channels
 ########Encoder
         self.input_layer = DoubleConv(self.channels, 64)
         self.Down1 = Down(64,128)
@@ -16,7 +15,7 @@ class UNet(nn.Module):
         self.Up2 = Up(512,256)
         self.Up3 = Up(256,128)
         self.Up4 = Up(128,64)
-        self.output_layer = OutConv(64, classes)
+        self.output_layer = OutConv(64, num_classes)
 
     def forward(self, x):
 ########Encoder
@@ -34,6 +33,6 @@ class UNet(nn.Module):
         return logits
 
 if __name__ == "__main__":
-    net = UNet(channels=4, classes=1)
+    net = UNet(in_channels=4, num_classes=1)
     print(net)
 

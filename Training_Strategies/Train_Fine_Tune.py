@@ -7,7 +7,7 @@ from sklearn.metrics import recall_score, precision_score
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 from Deep_Learning.Data_Readers.I2L1 import DataLoader
-from Deep_Learning.Models.Segformer_UNet_Concise.model import SegFormer
+from Deep_Learning.Models.SegFormer_UNet_Concise.model import SegFormer
 # from Deep_Learning.Models.Segformer.model import SegFormer
 import torch.nn as nn
 import warnings
