@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 from osgeo import gdal
-from Deep_Learning.Data_Readers.Data_Reader import Dataset
+from Data_Readers.Data_Reader import Dataset
 import os
 import glob
-from Deep_Learning.Data_Processors.Padding import Padding
-from Deep_Learning.Data_Processors.Percent_Linear_Enhancement import PercentLinearEnhancement
-from Deep_Learning.Data_Processors.Flip8x import Flip8x
+from Data_Processors.Padding import Padding
+from Data_Processors.Percent_Linear_Enhancement import PercentLinearEnhancement
+from Data_Processors.Flip8x import Flip8x
 
 # 1.linear enhance
 # 2.padding

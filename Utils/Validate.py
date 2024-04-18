@@ -3,18 +3,18 @@ import torch
 from sklearn.metrics import recall_score, precision_score
 from torch.utils.data.dataset import Dataset
 
-from Deep_Learning.Models.UNet.model import                     UNet
-from Deep_Learning.Models.AG_UNet.model import                  AGUNet
-from Deep_Learning.Models.ASPP_U2Net.model import               ASPPU2Net
-from Deep_Learning.Models.DeepLab_V3_Plus.model import          DeepLab
-from Deep_Learning.Models.SegFormer.model import                SegFormer
-from Deep_Learning.Models.SegFormer_OutConv.model import        SegFormerOutConv
-from Deep_Learning.Models.SegFormer_UNet.model import           SegFormerUNet
-from Deep_Learning.Models.SegFormer_UNet_Concise.model import   SegFormerUNetConcise
-from Deep_Learning.Data_Readers import Deploy_Reader_I1, Deploy_Reader_I2
+from Models.UNet.model import                     UNet
+from Models.AG_UNet.model import                  AGUNet
+from Models.ASPP_U2Net.model import               ASPPU2Net
+from Models.DeepLab_V3_Plus.model import          DeepLab
+from Models.SegFormer.model import                SegFormer
+from Models.SegFormer_OutConv.model import        SegFormerOutConv
+from Models.SegFormer_UNet.model import           SegFormerUNet
+from Models.SegFormer_UNet_Concise.model import   SegFormerUNetConcise
+from Data_Readers import Deploy_Loader_I1, Deploy_Loader_I2
 
 
-from Deep_Learning.Data_Readers.Validate_Reader_I2L1 import DataLoader
+from Data_Readers.Validate_Reader_I2L1 import DataLoader
 import numpy as np
 
 import warnings

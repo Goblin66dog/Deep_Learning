@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Deep_Learning.Models.DeepLab_V3_Plus.xception import xception
-from Deep_Learning.Models.DeepLab_V3_Plus.mobilenetv2 import mobilenetv2
+from Models.DeepLab_V3_Plus.xception import xception
+from Models.DeepLab_V3_Plus.mobilenetv2 import mobilenetv2
 
 class MobileNetV2(nn.Module):
     def __init__(self, downsample_factor=8, pretrained=False,in_channels = 3):

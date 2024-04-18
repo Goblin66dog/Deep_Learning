@@ -6,7 +6,7 @@ import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.tensorboard import SummaryWriter
 
-from Deep_Learning.Data_Readers import Data_Reader
+from Data_Readers import Data_Reader
 import cv2
 
 class DataLoader(Dataset):

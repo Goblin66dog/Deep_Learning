@@ -1,7 +1,7 @@
 import torch
 
 from Models.DeepLab_V3_Plus.model import DeepLab
-from Models.SegFormer_OutConv.model import SegFormer
+from Models.SegFormer_OutConv.model import SegFormerOutConv
 # from Models.SegFormer.model import SegFormer
 
 

@@ -6,13 +6,13 @@ import torch.utils.data
 from sklearn.metrics import recall_score, precision_score
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
-from Deep_Learning.Data_Readers.I1L1 import DataLoader
-from Deep_Learning.Models.AG_UNet.model import AGUNet
-# from Deep_Learning.Models.Segformer_UNet_Simplifier.model import SegFormer
-# from Deep_Learning.Models.UNet.model import UNet
-from Deep_Learning.Models.SegFormer_OutConv.model import SegFormer
-from Deep_Learning.Models.DeepLab_V3_Plus.model import DeepLab
-from Deep_Learning.Models.ASPP_U2Net.model import ASPPU2Net
+from Data_Readers.I1L1 import DataLoader
+from Models.AG_UNet.model import AGUNet
+# from Models.Segformer_UNet_Simplifier.model import SegFormer
+# from Models.UNet.model import UNet
+from Models.SegFormer_OutConv.model import SegFormerOutConv
+from Models.DeepLab_V3_Plus.model import DeepLab
+from Models.ASPP_U2Net.model import ASPPU2Net
 
 import torch.nn as nn
 import warnings
@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore")
 # backbone_lr = 0.0001*0.01
 def train(device, epochs=20, batch_size=1, lr=1e-3,step_size_up=2):
     #todo:
-    net = SegFormer(num_classes=1,pretrained=False,in_channel=3,phi="b3")
+    net = SegFormerOutConv(num_classes=1,pretrained=False,in_channel=3,phi="b3")
     # net = ASPPU2Net(image_channels=4, texture_channels=1,classes=1)
 ########################################################################################################################
     # pretrained_dict = torch.load(r"D:\Github_Repo\logs\SegFormer\model.pth",

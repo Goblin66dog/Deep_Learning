@@ -1,4 +1,4 @@
-from Deep_Learning.Models.ASPP_U2Net.parts import *
+from Models.ASPP_U2Net.parts import *
 # from parts import *
 
 class ASPPU2Net(nn.Module):

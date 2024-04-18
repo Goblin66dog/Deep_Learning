@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from osgeo import gdal
-from Deep_Learning.Data_Readers.Data_Reader import Dataset
+from Data_Readers.Data_Reader import Dataset
 import os
 import glob
 

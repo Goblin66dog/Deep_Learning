@@ -8,15 +8,15 @@ from sklearn.metrics import recall_score, precision_score
 from torch import optim
 from torch.utils.tensorboard import SummaryWriter
 
-from Deep_Learning.Data_Readers.I2L1 import DataLoader
-from Deep_Learning.Models.UNet.model                    import UNet
-from Deep_Learning.Models.DeepLab_V3_Plus.model         import DeepLab
-from Deep_Learning.Models.AG_UNet.model                 import AGUNet
-from Deep_Learning.Models.ASPP_U2Net.model              import ASPPU2Net
-from Deep_Learning.Models.SegFormer.model               import SegFormer
-from Deep_Learning.Models.SegFormer_OutConv.model       import SegFormerOutConv
-from Deep_Learning.Models.SegFormer_UNet.model          import SegFormerUNet
-from Deep_Learning.Models.SegFormer_UNet_Concise.model  import SegFormerUNetConcise
+from Data_Readers.I2L1 import DataLoader
+from Models.UNet.model                    import UNet
+from Models.DeepLab_V3_Plus.model         import DeepLab
+from Models.AG_UNet.model                 import AGUNet
+from Models.ASPP_U2Net.model              import ASPPU2Net
+from Models.SegFormer.model               import SegFormer
+from Models.SegFormer_OutConv.model       import SegFormerOutConv
+from Models.SegFormer_UNet.model          import SegFormerUNet
+from Models.SegFormer_UNet_Concise.model  import SegFormerUNetConcise
 
 
 

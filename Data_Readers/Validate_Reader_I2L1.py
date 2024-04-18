@@ -3,10 +3,10 @@ import os
 import numpy as np
 import torch
 from torch.utils.data.dataset import Dataset
-from Deep_Learning.Data_Processors.Padding import Padding
-from Deep_Learning.Data_Processors.Percent_Linear_Enhancement import PercentLinearEnhancement
+from Data_Processors.Padding import Padding
+from Data_Processors.Percent_Linear_Enhancement import PercentLinearEnhancement
 
-from Deep_Learning.Data_Readers import Data_Reader
+from Data_Readers import Data_Reader
 import cv2
 
 class DataLoader(Dataset):
