@@ -154,6 +154,21 @@ class DeployByPth:
             self.I2_single(input1_path_list[path],
                            input2_path_list[path])
 
+
+    # @staticmethod
+    # def processor(item, input_shape, percent_linear_enhance=True, padding=, invert_channel=True):
+    #     processed_image = item.array
+    #     processed_image = processed_image.reshape(item.bands, item.height, item.width)
+    #     if invert_channel:
+    #         processed_image = processed_image[::-1, ]
+    #     processed_image = PercentLinearEnhancement(processed_image, input_shape).gray_process()
+    #     processed_image = Padding(processed_image, input_shape).min(8)
+    #     processed_image = cv2.normalize(processed_image, None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+    #     processed_image = torch.tensor(processed_image, dtype=torch.float32)
+    #     processed_image = processed_image.reshape(1, item.bands, processed_image.shape[1], processed_image.shape[2])
+    #     return processed_image
+
+
 if __name__ == "__main__":
     # model1 = UNet(in_channels=5,num_classes=1)
     # model2 = AGUNet(in_channels=5,num_classes=1)
@@ -164,11 +179,11 @@ if __name__ == "__main__":
     # model7 = SegFormerUNet(in_channels=5,num_classes=1,backbone="b3")
     model8 = SegFormerUNetConcise(in_channels=5,num_classes=1,backbone="b3")
     model_path = r"D:\Github_Repo\Open Pit Mining\logs\SegFormer_U\model logs\model2.pth"
-    output_path= r"D:\Github_Repo\Open Pit Mining\尝试"
+    output_path= r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.23"
 #     DeployByPth(model8, model_path,output_path).I2_single(
 #         r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.13\image1\2020.tif",
 #         r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.13\image2\2020.tif"
 # )
     DeployByPth(model8, model_path, output_path).I2_batch(
-        r"D:\Github_Repo\Open Pit Mining\validate_ori_image",
+        r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.23",
     )
