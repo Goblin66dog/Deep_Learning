@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b29a0de-c024-4327-b991-491542d41896" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/Data_Distributors/Alloted_Distributor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data_Distributors/N_Cross_Distributor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data_Distributors/Processed_Distributor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data_Distributors/Random_Distributor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data_Processors/DataPreProcessorROM.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/000.py" beforeDir="false" afterPath="$PROJECT_DIR$/000.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/I1L1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Readers/I1L1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/I2L1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Readers/I2L1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Training_Strategies/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Training_Strategies/Train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data_Processors/DataPreProcessorROM.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
