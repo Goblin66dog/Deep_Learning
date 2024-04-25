@@ -10,10 +10,11 @@ from Data_Readers import Data_Reader
 import cv2
 
 class DataLoader(Dataset):
-    def __init__(self, input_datasets_path):
+    def __init__(self, image1_path_list, label_path_list, reverse_channel=True):
         super(DataLoader, self).__init__()
-        self.image1_path = glob.glob(os.path.join(input_datasets_path, "image/*"))
-        self.label_path = glob.glob(os.path.join(input_datasets_path, "label/*"))
+        self.image1_path = image1_path_list
+        self.label_path  = label_path_list
+        self.reverse_channel = reverse_channel
 
     def __getitem__(self, index):
 
@@ -38,7 +39,8 @@ class DataLoader(Dataset):
 
         #reshape
         image1_array = image1_array.reshape(image1_bands,image1_height,image1_width)
-        image1_array = image1_array[::-1,]
+        if self.reverse_channel or image1_bands < 3:
+            image1_array = image1_array[::-1,]
         label_array  = label_array .reshape(label_bands  ,label_height ,label_width)
 
         image1_array = cv2.normalize(image1_array,None, 0, 1, cv2.NORM_MINMAX, dtype=cv2.CV_32F)

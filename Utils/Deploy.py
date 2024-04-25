@@ -179,11 +179,11 @@ if __name__ == "__main__":
     # model7 = SegFormerUNet(in_channels=5,num_classes=1,backbone="b3")
     model8 = SegFormerUNetConcise(in_channels=5,num_classes=1,backbone="b3")
     model_path = r"D:\Github_Repo\Open Pit Mining\logs\SegFormer_U\model logs\model2.pth"
-    output_path= r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.23"
+    output_path= r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.25"
 #     DeployByPth(model8, model_path,output_path).I2_single(
 #         r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.13\image1\2020.tif",
 #         r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.13\image2\2020.tif"
 # )
     DeployByPth(model8, model_path, output_path).I2_batch(
-        r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.23",
+        r"D:\Github_Repo\Open Pit Mining\validate_ori_image\4.25\data",
     )

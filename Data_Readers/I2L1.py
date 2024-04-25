@@ -10,11 +10,12 @@ from Data_Readers import Data_Reader
 import cv2
 
 class DataLoader(Dataset):
-    def __init__(self, input_datasets_path):
+    def __init__(self, image1_path_list, image2_path_list, label_path_list, reverse_channel = True):
         super(DataLoader, self).__init__()
-        self.image1_path = glob.glob(os.path.join(input_datasets_path, "image1/*"))
-        self.image2_path = glob.glob(os.path.join(input_datasets_path, "image2/*"))
-        self.label_path = glob.glob(os.path.join(input_datasets_path, "label/*"))
+        self.image1_path = image1_path_list
+        self.image2_path = image2_path_list
+        self.label_path  = label_path_list
+        self.reverse_channel = reverse_channel
 
     def __getitem__(self, index):
 
@@ -46,7 +47,8 @@ class DataLoader(Dataset):
 
         #reshape
         image1_array = image1_array.reshape(image1_bands,image1_height,image1_width)
-        image1_array = image1_array[::-1,]
+        if self.reverse_channel or image1_bands < 3:
+            image1_array = image1_array[::-1,]
         image2_array = image2_array.reshape(image2_bands,image2_height,image2_width)
         label_array  = label_array .reshape(label_bands  ,label_height ,label_width)
 
@@ -67,26 +69,12 @@ class DataLoader(Dataset):
 
 if __name__ == "__main__":
 
-    train_dataloader = DataLoader(r"D:\Project\CUMT_PAPER_DATASETS_FINAL_VALID")
-    train_data = torch.utils.data.DataLoader(
-        dataset=train_dataloader,
-        batch_size=1,
-        shuffle=True
-    )
-    writer = {
-        "data":SummaryWriter(r"logs")
-    }
-    step = 1
-    for x, y, z in train_data:
-        print(z[0][0].shape)
-        # cv2.imshow("image",np.array(z[0])[0])
-        # cv2.waitKey(0)
+    from Data_Distributors.Processed_Distributor import Distributor
+    datasets = Distributor(r"D:\Project\CUMT_PAPER_DATASETS_FINAL").N_Cross_Distributor()
+    for i in range(3):
+        validate_dataloader = DataLoader(datasets[i][1],datasets[i][1],datasets[i][1])
+        train_dataloader = DataLoader(datasets[i][0],datasets[i][0],datasets[i][0])
+        print(len(train_dataloader))
+        print(len(validate_dataloader))
 
-        writer["data"].add_images("image1", x[:,:3], step)
-        writer["data"].add_images("image2", y, step)
-        writer["data"].add_images("label", z, step)
-
-
-        step += 1
-    writer["data"].close()
 

@@ -182,95 +182,154 @@ def train(device, epochs=10, batch_size=2, lr=5e-3,step_size_up=1):
     writer["label"].close()
     writer["pred"].close()
     writer["lr"].close()
-#
-# class TrainingStrategy:
-#     def __init__(self,
-#                  device,
-#                  net,
-#                  batch_size,
-#                  epochs,
-#                  optimizer,
-#                  learning_rate,
-#                  loss,
-#                  backbones,
-#                  training_data_path,
-#                  validate_data_path = None,
-#                  logs_path = None):
-#         self.device             = device
-#         self.net                = net
-#         self.batch_size         = batch_size
-#         self.epochs             = epochs
-#         self.optimizer          = optimizer
-#         self.learning_rate      = learning_rate
-#         self.loss               = loss
-#         self.backbones          = backbones
-#         self.training_data_path = training_data_path
-#         self.validate_data_path = validate_data_path
-#         self.logs_path          = logs_path
-#         self.create_logs()
-#     def create_logs(self):
-#         print("准备生成日志文件目录")
-#         if self.logs_path is None:
-#             writer = {
-#                 "loss"      : SummaryWriter(r"logs\loss"),
-#                 'recall'    : SummaryWriter(r"logs\recall"),
-#                 'precision' : SummaryWriter(r"logs\precision"),
-#                 "label"     : SummaryWriter(r"logs\label"),
-#                 "pred"      : SummaryWriter(r"logs\pred"),
-#                 "lr"        : SummaryWriter(r"logs\lr")
-#             }
-#         else:
-#             writer = {
-#                 "loss"      : SummaryWriter(self.logs_path  + r"\loss"),
-#                 'recall'    : SummaryWriter(self.logs_path  + r"\recall"),
-#                 'precision' : SummaryWriter(self.logs_path  + r"\precision"),
-#                 "label"     : SummaryWriter(self.logs_path  + r"\label"),
-#                 "pred"      : SummaryWriter(self.logs_path  + r"\pred"),
-#                 "lr"        : SummaryWriter(self.logs_path  + r"\lr")
-#             }
-#         print("日志文件目录生成完成")
-#
-#     def train(self):
-#         step = 0
-# ########################################################################################################################
-#         print("开始读取训练数据")
-#         TrainLoader = DataLoader(self.training_data_path)
-#         print("训练数据读取完成")
-#         if self.validate_data_path is not None:
-#             print("开始读取验证数据")
-#             ValidLoader = DataLoader(self.validate_data_path)
-#             print("验证数据读取完成")
-#
-#         TrainData = torch.utils.data.DataLoader(
-#             dataset=TrainLoader,
-#             batch_size=self.batch_size,
-#             shuffle=True
-#         )
-#
-#         BestLoss = float("inf")
-#         self.net.train()
-#
-#         for epoch in range(self.epochs):
-#             for image, label in TrainData:
-#                 self.optimizer.zero_grad()
-#
-#                 image = image.to(device=self.device, dtype=torch.float32)
-#                 label = label.to(device=self.device, dtype=torch.float32)
-#
-#                 prediction = self.net(image, label)
-#                 L1 = nn.BCEWithLogitsLoss()
-#                 Loss = L1(prediction, label)
-#
-#                 if Loss < BestLoss:
-#                     BestLoss = Loss
-#                     torch.save(self.net.state_dict(), "model.pth")
-#
-#                 Loss.backward()
-#                 self.optimizer.step()
-#                 step += 1
-#
-#             self.net.eval()
-#             with torch.no_grad():
+
+class TrainingStrategy:
+    def __init__(self,
+                 device,
+                 net,
+                 batch_size,
+                 epochs,
+                 optimizer,
+                 learning_rate,
+                 loss,
+                 backbones,
+                 training_data_path,
+                 validate_data_path = None,
+                 logs_path = None
+                 ):
+        self.device             = device
+        self.net                = net
+        self.batch_size         = batch_size
+        self.epochs             = epochs
+        self.optimizer          = optimizer
+        self.learning_rate      = learning_rate
+        self.loss               = loss
+        self.backbones          = backbones
+        self.training_data_path = training_data_path
+        self.validate_data_path = validate_data_path
+        self.logs_path          = logs_path
+        self.validate_mode      = "random"
+        self.create_logs()
+    def create_logs(self):
+        print("准备生成日志文件目录")
+        if self.logs_path is None:
+            self.logs_path = r"logs"
+        writer = {
+            "loss"      : SummaryWriter(self.logs_path  + r"\loss"),
+            'recall'    : SummaryWriter(self.logs_path  + r"\recall"),
+            'precision' : SummaryWriter(self.logs_path  + r"\precision"),
+            "label"     : SummaryWriter(self.logs_path  + r"\label"),
+            "pred"      : SummaryWriter(self.logs_path  + r"\pred"),
+            "lr"        : SummaryWriter(self.logs_path  + r"\lr")
+        }
+        print("日志文件目录生成完成")
+    def train(self):
+        step = 0
+########################################################################################################################
+        # 如果没有验证样本，验证集从训练样本中随机抽取（如分配比：0.1即从总样本中抽取10%作为验证集）
+        # 如果有验证样本，直接读取验证样本路径
+        if self.validate_data_path is not None:
+            print("开始读取验证数据")
+            ValidLoader = DataLoader(self.validate_data_path)
+            print("验证数据读取完成")
+        else:
+
+
+        print("开始读取训练数据")
+        TrainLoader = DataLoader(self.training_data_path)
+        print("训练数据读取完成")
+
+
+        TrainData = torch.utils.data.DataLoader(
+            dataset=TrainLoader[:],
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+        ValidateData = torch.utils.data.DataLoader(
+            dataset=ValidLoader,
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+
+        BestLoss = float("inf")
+        self.net.train()
+
+        for epoch in range(self.epochs):
+            for image, label in TrainData:
+                self.optimizer.zero_grad()
+
+                image = image.to(device=self.device, dtype=torch.float32)
+                label = label.to(device=self.device, dtype=torch.float32)
+
+                prediction = self.net(image, label)
+                L1 = nn.BCEWithLogitsLoss()
+                Loss = L1(prediction, label)
+
+                if Loss < BestLoss:
+                    BestLoss = Loss
+                    torch.save(self.net.state_dict(), "model.pth")
+
+                Loss.backward()
+                self.optimizer.step()
+                step += 1
+
+            self.net.eval()
+            with torch.no_grad():
+                for val_image1, val_image2, val_label in ValidLoader
+                # "single" 即每隔一个epoch单样本跟踪验证
+                if self.validate_mode == "single":
+                    val_image, val_texture, val_label = ValidLoader[step%len(ValidLoader)]
+                # "batch" 即每隔一个epoch批量样本跟踪验证，最后统一计算精度指标
+                if self.validate_mode == "batch":
+
+                    image = image.to(device=self.device, dtype=torch.float32)
+                    label = label.to(device=self.device, dtype=torch.float32)
+
+                    val_image, val_texture, val_label = ValidLoader[step%len(ValidLoader)]
+                # todo
+                # val_image   = torch.cat([val_image,val_texture],dim=0).to(device=device, dtype=torch.float32)
+                val_image = val_image.to(device=device, dtype=torch.float32)
+                val_texture = val_texture.to(device=device, dtype=torch.float32)
+                val_label = val_label.to(device=device, dtype=torch.float32)
+
+                val_image = val_image.reshape(1, 4, val_image.shape[1], val_image.shape[2])
+                val_texture = val_texture.reshape(1, 1, val_texture.shape[1], val_texture.shape[2])
+                val_label = val_label.reshape(1, 1, val_label.shape[1], val_label.shape[2])
+                # todo:
+                val_pred = net(val_image, val_texture)
+                # val_pred = net(val_image)
+
+                val_pred = torch.sigmoid(val_pred)
+
+                val_pred[val_pred > 0.5] = 1
+                val_pred[val_pred <= 0.5] = 0
+
+                val_pred = np.array(val_pred.data.cpu())
+                val_label = np.array(val_label.data.cpu())
+
+                val_pred[np.isnan(val_pred)] = 0
+
+                writer["pred"].add_images("pred", val_pred, step)
+                writer["label"].add_images("label", val_label, step)
+
+                val_label = val_label.reshape(-1)
+                val_pred = val_pred.reshape(-1)
+
+                recall = recall_score(val_label, val_pred)
+                precision = precision_score(val_label, val_pred)
+            net.train()
+            writer['recall'].add_scalar("data", recall, step)
+            writer['precision'].add_scalar("data", precision, step)
+        writer['loss'].add_scalar("data", loss, step)
+        writer['lr'].add_scalar("data", optimizer.state_dict()['param_groups'][0]['lr'], step)
+        # scheduler.step()
+
+    writer["loss"].close()
+    writer["recall"].close()
+    writer["precision"].close()
+    writer["label"].close()
+    writer["pred"].close()
+    writer["lr"].close()
 
 
 
