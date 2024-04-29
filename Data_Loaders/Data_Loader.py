@@ -5,8 +5,7 @@ import torch
 from torch.utils.data.dataset import Dataset
 from torch.utils.tensorboard import SummaryWriter
 
-import Data_Reader
-
+from Data_Readers import Data_Reader
 
 class DataLoader(Dataset):
     def __init__(self, input_datasets_path):

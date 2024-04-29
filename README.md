@@ -11,6 +11,7 @@
     - [网络库](#网络库)
   - [训练配置](#训练配置)
     - [数据分配](#数据分配)
+    - [数据加载](#数据加载)
     - [损失函数](#损失函数)
     - [优化器](#优化器)
     - [训练策略](#训练策略)
@@ -18,6 +19,7 @@
 - [Thanks For Supporting!](#Thanks For Supporting!)
 
 # 项目の目的
+
 # 项目の结构
 <pre> Datasets
 ->数据读取
@@ -28,9 +30,7 @@
 </pre>
 
 # 项目の详述
-
 ## 数据读取
-***
 **_Data_Reader_**
 - **数据读取模块**
 - 用于各种栅格数据读取
@@ -50,7 +50,6 @@
   - self.type      : 图像数据格式
 - 无返回值
 </pre>
-***
 ## 数据处理
 **_Padding_**
 - **对单张图像进行Padding操作**
@@ -69,19 +68,44 @@
     - 函数返回为输入图像与divide之间的最小公倍数大小的图像
 - 返回一个经Padding操作的图像
 </pre>
-***
 **_Random_Flip_**
 - **对原始图像和标签图像进行随机反转操作**
 <pre>
 - RandomFlip        : 定义了一个RandomFlip类
   - image           : 输入原始图像栅格
   - label           : 输入标签图像栅格
-  - random_flip     : 随机翻转
+  - self.random_flip     : 随机翻转
 - 返回一对经随机翻转的图像元组
 </pre>
-***
+**_Flip8x_**
+- **对图像进行包括翻转、旋转在内的所有角度翻转操作**
+<pre>
+- Flip8x        : 定义了一个Flip8x类
+  - image           : 输入图像栅格
+  - image_shape     : N·C·H·W的顺序
+  - self.flip8x     : 8种角度翻转
+    - 函数返回的是8种角度翻转的列表栅格
+  - self.flip       : 返回8种角度反转的图像，保存到本地
+</pre>
+**_Percent_Linear_Enhancement_**
+- **线性拉伸**
 
-***
+
+**_DataPreProcessor_**
+- **对图像进行预处理操作，并将图像保存到本地**
+<pre>
+- Processor              : 定义了一个Processor类
+  - self.batch_processor : 数据批处理
+    - input_pack_path    : 输入数据集路径
+    - output_pack_path   : 输出文件夹名称
+    - image_shape        : N·C·H·W的顺序
+    - mode               : 处理模式
+      - L                : 线性拉伸
+      - P                : Padding 
+      - F                : 翻转
+  - 调用batch_processor函数后将直接保存批处理的图像到指定文件夹
+</pre>
+
 **_Data_Loader_**
 - **数据加载模块**
 - **适应于单输入图像网络**
@@ -90,5 +114,14 @@
   - 读取后将栅格存储进入Dataloader中
   - 返回为栅格序列
   - 返回的栅格类型为：N·C·H·W
-
-
+<pre>
+- DataLoader            : 定义了一个DataLoader类
+  - input_datasets_path : 输入数据集路径
+- 返回一对数据数组(image, label)
+Attention!:数据集路径文件夹应当按照一下定义要求进行分配：
+--Datasets
+ ->image1(模型输入1文件夹)
+ ->image2(模型输入2文件夹)
+ ...
+ ->label(标签文件夹)
+</pre>

@@ -20,7 +20,7 @@ from Models.SegFormer.model import                SegFormer
 from Models.SegFormer_OutConv.model import        SegFormerOutConv
 from Models.SegFormer_UNet.model import           SegFormerUNet
 from Models.SegFormer_UNet_Concise.model import   SegFormerUNetConcise
-from Data_Readers import Deploy_Loader_I1, Deploy_Loader_I2
+from Data_Loaders import Deploy_Loader_I1, Deploy_Loader_I2
 
 
 import warnings

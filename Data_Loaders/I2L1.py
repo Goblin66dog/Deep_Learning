@@ -10,19 +10,17 @@ from Data_Readers import Data_Reader
 import cv2
 
 class DataLoader(Dataset):
-    def __init__(self, image1_path_list, image2_path_list, label_path_list, reverse_channel = True):
+    def __init__(self,label_path_list, reverse_channel = True):
         super(DataLoader, self).__init__()
-        self.image1_path = image1_path_list
-        self.image2_path = image2_path_list
         self.label_path  = label_path_list
         self.reverse_channel = reverse_channel
 
     def __getitem__(self, index):
 
         #根据index读取图像和标签
-        image1_path = self.image1_path[index]
-        image2_path = self.image2_path[index]
         label_path = self.label_path[index]
+        image1_path = label_path.replace("label", "image1")
+        image2_path = label_path.replace("label", "image2")
 
         #读取训练图片和标签图片
         image1 = Data_Reader.Dataset(image1_path)
@@ -65,15 +63,15 @@ class DataLoader(Dataset):
         return image1_array, image2_array, label_array
 
     def __len__(self):
-        return len(self.image1_path)
+        return len(self.label_path)
 
 if __name__ == "__main__":
 
     from Data_Distributors.Processed_Distributor import Distributor
     datasets = Distributor(r"D:\Project\CUMT_PAPER_DATASETS_FINAL").N_Cross_Distributor()
     for i in range(3):
-        validate_dataloader = DataLoader(datasets[i][1],datasets[i][1],datasets[i][1])
-        train_dataloader = DataLoader(datasets[i][0],datasets[i][0],datasets[i][0])
+        validate_dataloader = DataLoader(datasets[i][1])
+        train_dataloader = DataLoader(datasets[i][0])
         print(len(train_dataloader))
         print(len(validate_dataloader))
 

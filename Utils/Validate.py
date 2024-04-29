@@ -1,6 +1,5 @@
-import cv2
 import torch
-from sklearn.metrics import recall_score, precision_score
+from sklearn.metrics import recall_score, precision_score,accuracy_score
 from torch.utils.data.dataset import Dataset
 
 from Models.UNet.model import                     UNet
@@ -11,10 +10,8 @@ from Models.SegFormer.model import                SegFormer
 from Models.SegFormer_OutConv.model import        SegFormerOutConv
 from Models.SegFormer_UNet.model import           SegFormerUNet
 from Models.SegFormer_UNet_Concise.model import   SegFormerUNetConcise
-from Data_Readers import Deploy_Loader_I1, Deploy_Loader_I2
 
-
-from Data_Readers.Validate_Reader_I2L1 import DataLoader
+from Data_Loaders.Validate_Reader_I2L1 import DataLoader
 import numpy as np
 
 import warnings
@@ -33,7 +30,7 @@ def pth_push(image_path, model_path):
     model6 = SegFormerOutConv(in_channels=5, num_classes=1, backbone="b3")
     model7 = SegFormerUNet(in_channels=5, num_classes=1, backbone="b3")
     model8 = SegFormerUNetConcise(in_channels=5, num_classes=1, backbone="b3")
-    model = model3
+    model = model1
 
     model_path = model_path#pth权重文件地址
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')#cpu or gpu
@@ -53,25 +50,26 @@ def pth_push(image_path, model_path):
     precision_weight = []
     recall_list = []
     precision_list = []
+    accuracy = []
 
 
     step = 0
     for image, texture, label, path, label_pixels in data:
         # if label_pixels == 0:
         #     continue
-        # image = torch.cat([image, texture], dim=1).to(device=device, dtype=torch.float32)
-        image = image.to(device=device, dtype=torch.float32)
+        image = torch.cat([image, texture], dim=1).to(device=device, dtype=torch.float32)
+        # image = image.to(device=device, dtype=torch.float32)
 
         texture = texture.to(device=device, dtype=torch.float32)
         label = label.to(device=device, dtype=torch.float32)
 
-        # pred = model(image)
-        pred = model(image, texture)
+        pred = model(image)
+        # pred = model(image, texture)
 
         pred = torch.sigmoid(pred)
 
-        pred[pred  > 0.63] = 1
-        pred[pred <= 0.63] = 0
+        pred[pred  > 0.5] = 1
+        pred[pred <= 0.5] = 0
 
         pred = np.array(pred.data.cpu())
         label = np.array(label.data.cpu())
@@ -86,6 +84,7 @@ def pth_push(image_path, model_path):
 
         recall = recall_score(label, pred)
         precision = precision_score(label, pred)
+        acc       = accuracy_score(label,pred)
 
         step += 1
         file.writelines(format(str(step), '>03') +":"+format(str(round(recall, 4)), '<06') + "   "
@@ -95,6 +94,7 @@ def pth_push(image_path, model_path):
         precision_weight.append(pred_pixels)
         recall_list.append(recall)
         precision_list.append(precision)
+        accuracy.append(acc)
 
         image_path_list.append(path)
     file.writelines("\n"+"各验证样本路径："+ "\n")
@@ -116,13 +116,19 @@ def pth_push(image_path, model_path):
 
     precision = sum(precision)
     recall = sum(recall)
+    f1     = 2*precision*recall/(precision+recall)
+    accuracy = sum(accuracy)/len(accuracy)
 
     file.writelines("recall："+str(np.array(recall))+"\n")
     file.writelines("precision：" + str(precision) + "\n")
-
+    file.writelines("F1:"+str(f1)+"\n")
+    file.writelines("acc:" + str(accuracy) + "\n")
     file.close()
 if __name__ == "__main__":
-    image_path = r"D:\Github_Repo\Deploy"
-    # model_path = r"D:\Github_Repo\logs\SegFormer_U\model logs\model2.pth"
-    model_path = r"D:\Github_Repo\Deep_Learning\Training_Strategies\model.pth"
+    image_path = r"D:\Github_Repo\Open Pit Mining\Deploy"
+    # model_path = r"D:\Github_Repo\Open Pit Mining\logs\SegFormer_U\model logs\model2.pth"
+    # model_path = r"D:\Github_Repo\Deep_Learning\Training_Strategies\model.pth"
+    # model_path = r"D:\Github_Repo\Open Pit Mining\logs\SegFormer\model.pth"
+    model_path = r"D:\Github_Repo\Open Pit Mining\logs\UNet\model.pth"
+    # model_path = r"D:\Github_Repo\Open Pit Mining\logs\ASPPU2Net\model2.pth"
     pth_push(image_path, model_path)
