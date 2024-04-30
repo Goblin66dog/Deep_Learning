@@ -6,20 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5b29a0de-c024-4327-b991-491542d41896" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Distributors/Alloted_Distributor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Distributors/Alloted_Distributor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/Data_Loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/Data_Loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/Deploy_Loader_I1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/Deploy_Loader_I1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/Deploy_Loader_I2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/Deploy_Loader_I2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/I1L1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/I1L1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/I2L1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/I2L1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_Readers/Validate_Reader_I2L1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_Loaders/Validate_Reader_I2L1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Training_Strategies/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Training_Strategies/Train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/Deploy.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Deploy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/HeatMap.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/HeatMap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/TestMap.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/TestMap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/Validate.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/Validate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/test logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/test logs.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
