@@ -17,6 +17,7 @@
     - [训练策略](#训练策略)
   - [模型部署（后话）](#模型部署)
 - [Thanks For Supporting!](#Thanks For Supporting!)
+- [遭不住了有点多，哥们要考研了，开摆!(2024.4.30)](#遭不住了有点多，哥们要考研了，开摆!(2024.4.30))
 
 # 项目の目的
 
@@ -30,7 +31,8 @@
 </pre>
 
 # 项目の详述
-## 数据读取
+## 训练准备
+### 数据读取
 **_Data_Reader_**
 - **数据读取模块**
 - 用于各种栅格数据读取
@@ -50,7 +52,7 @@
   - self.type      : 图像数据格式
 - 无返回值
 </pre>
-## 数据处理
+### 数据处理
 **_Padding_**
 - **对单张图像进行Padding操作**
 <pre>
@@ -90,7 +92,6 @@
 **_Percent_Linear_Enhancement_**
 - **线性拉伸**
 
-
 **_DataPreProcessor_**
 - **对图像进行预处理操作，并将图像保存到本地**
 <pre>
@@ -124,4 +125,27 @@ Attention!:数据集路径文件夹应当按照一下定义要求进行分配：
  ->image2(模型输入2文件夹)
  ...
  ->label(标签文件夹)
+</pre>
+
+### 网络库
+#### 包含：
+**_U-Net_** ：经典的U-Net语义分割模型
+
+**_AG-U-Net_** ：于跳层链接&上采样间增加注意力门
+
+**_ASPP-U-Net_** ：增加ASPP空间金字塔池化模块
+
+**_DeepLabV3+_** ：经典的DeepLabV3+语义分割模型
+
+**_SegFormer_** ：经典的SegFormer语义分割模型
+
+**_SegFormer-OutConv_** ：将最后的多层感知机解码器更换为多层卷积解码器
+
+**_BenchSegNet_** ：为面向露天矿台阶识别任务修改的SegFormer变体
+#### 参数调整：
+<pre>
+- in_channels ：输入通道数
+- num_classes ：输出类别数
+- backbone    ：骨干网络
+- pretrained  ：使用预训练参数
 </pre>
